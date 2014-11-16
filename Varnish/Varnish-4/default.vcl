@@ -36,6 +36,11 @@ sub vcl_recv {
 	# Normalize the header, remove the port (in case you're testing this on various TCP ports)
 	set req.http.Host = regsub(req.http.Host, ":[0-9]+", "");
 
+	# Remove has_js and CloudFlare/Google Analytics __* cookies.
+	set req.http.Cookie = regsuball(req.http.Cookie, "(^|;\s*)(_[_a-z]+|has_js)=[^;]*", "");
+	# Remove a ";" prefix, if present.
+	set req.http.Cookie = regsub(req.http.Cookie, "^;\s*", "");
+	
 	# Allow purging from ACL
 	if (req.method == "PURGE") {
 		# If not allowed then a error 405 is returned
