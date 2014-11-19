@@ -73,6 +73,10 @@ sub vcl_recv {
 	if (req.url ~ "/wp-(login|admin)") {
 		return (pass);
 	}
+	# Do not cache previews
+	if (req.url ~ "preview=true") {
+	return(pass);
+	}
 
 	# Remove the "has_js" cookie
 	set req.http.Cookie = regsuball(req.http.Cookie, "has_js=[^;]+(; )?", "");
