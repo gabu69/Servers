@@ -205,7 +205,19 @@ sub vcl_purge {
     set req.http.X-Purge = "Yes";
     return(restart);
 }
+sub vcl_hit {
+        if (req.method == "PURGE") {
+                purge;
+                 return (synth(200, "Purged"));
+        }
+}
 
+sub vcl_miss {
+        if (req.method == "PURGE") {
+                purge;
+                 return (synth(200, "Purged"));
+        }
+}
  
 # The routine when we deliver the HTTP request to the user
 # Last chance to modify headers that are sent to the client
