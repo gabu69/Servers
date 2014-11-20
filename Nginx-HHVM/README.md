@@ -20,7 +20,7 @@ After
 Link NGINX and HHVM  
 `ln -s $(which hhvm) /usr/local/bin/php`  
 **Wasn't included in the guide but seems to be needed**  
-`Run on boot sudo update-rc.d hhvm defaults` # RUN HHVM ON **REBOOT**
+Run on boot `sudo update-rc.d hhvm defaults` # RUN HHVM ON **REBOOT**
 ##Recommendations:
 ###NGINX
  * Optimize NGINX: https://rtcamp.com/tutorials/nginx/optimization/
