@@ -70,12 +70,8 @@ sub vcl_recv {
 
 	
 	# Did not cache the admin and login pages
-	if (req.url ~ "/wp-(login|admin)") {
+	if (req.url ~ "/wp-(login|admin)" || req.url ~ "preview=true") {
 		return (pass);
-	}
-	# Do not cache previews
-	if (req.url ~ "preview=true") {
-	return(pass);
 	}
 
 	# Remove the "has_js" cookie
