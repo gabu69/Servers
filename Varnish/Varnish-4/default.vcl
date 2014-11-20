@@ -57,7 +57,7 @@ sub vcl_recv {
 	# --- Wordpress specific configuration
 	
 	# Did not cache the admin and login pages
-	if (bereq.url ~ "/wp-(login|admin)" || bereq.url ~ "preview=true") {
+	if (req.url ~ "/wp-(login|admin)" || req.url ~ "preview=true") {
 		return (pass);
 	}
 
@@ -159,11 +159,15 @@ sub vcl_backend_response {
 	if (bereq.url ~ "\.(css|js|png|gif|jp(e?)g)|swf|ico") {
 		unset beresp.http.cookie;
 	}
-
+	# Don't store backend
+	if (bereq.url ~ "wp-(login|admin|cron.php)" || bereq.url ~ "preview=true") {
+	return (deliver);
+	}
+	
 	# Only allow cookies to be set if we're in admin area
-	if (beresp.http.Set-Cookie && bereq.url !~ "^/wp-(login|admin)") {
-        	unset beresp.http.Set-Cookie;
-    	}
+	if (!(bereq.url ~ "(wp-login|wp-admin|preview=true)")) {
+        unset beresp.http.set-cookie;
+        }
 
 	# don't cache response to posted requests or those with basic auth
 	if ( bereq.method == "POST" || bereq.http.Authorization ) {
