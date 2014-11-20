@@ -57,8 +57,8 @@ sub vcl_recv {
 	# --- Wordpress specific configuration
 	
 	# Did not cache the admin and login pages
-	if (req.url ~ "/wp-(login|admin)" || req.url ~ "preview=true") {
-		return (pass);
+	if (req.url ~ "wp-(login|admin)" || req.url ~ "preview=true") {
+	return (pass);
 	}
 
 	# Remove the "has_js" cookie
@@ -160,7 +160,8 @@ sub vcl_backend_response {
 		unset beresp.http.cookie;
 	}
 	# Don't store backend
-	if (bereq.url ~ "wp-(login|admin|cron.php)" || bereq.url ~ "preview=true") {
+	if (bereq.url ~ "wp-(login|admin)" || bereq.url ~ "preview=true") {
+	set beresp.uncacheable = true;
 	return (deliver);
 	}
 	
