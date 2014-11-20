@@ -167,9 +167,9 @@ sub vcl_backend_response {
 	}
 	
 	# Only allow cookies to be set if we're in admin area
-		if (!(bereq.url ~ "(wp-login|wp-admin)")) {
+		if (!(bereq.url ~ "(wp-login|wp-admin|preview=true)")) {
         	unset beresp.http.set-cookie;
-        }
+	}
 
 	# don't cache response to posted requests or those with basic auth
 	if ( bereq.method == "POST" || bereq.http.Authorization ) {
