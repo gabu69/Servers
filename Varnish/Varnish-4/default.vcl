@@ -161,13 +161,14 @@ sub vcl_backend_response {
 	}
 	# Don't store backend
 	if (bereq.url ~ "wp-(login|admin)" || bereq.url ~ "preview=true") {
-	set beresp.uncacheable = true;
-	return (deliver);
+		set beresp.uncacheable = true;
+		set beresp.ttl = 30s;
+		return (deliver);
 	}
 	
 	# Only allow cookies to be set if we're in admin area
-	if (!(bereq.url ~ "(wp-login|wp-admin|preview=true)")) {
-        unset beresp.http.set-cookie;
+		if (!(bereq.url ~ "(wp-login|wp-admin)")) {
+        	unset beresp.http.set-cookie;
         }
 
 	# don't cache response to posted requests or those with basic auth
