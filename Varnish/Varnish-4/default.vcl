@@ -8,9 +8,7 @@
 # See the VCL chapters in the Users Guide at https://www.varnish-cache.org/docs/
 # and http://varnish-cache.org/trac/wiki/VCLExamples for more examples.
 
-# Update for work with Varnish 4
-
-
+# Update of varnish 4 to work with wordpress
 # Marker to tell the VCL compiler that this VCL has been adapted to the
 # new 4.0 format.
 vcl 4.0;
@@ -58,19 +56,8 @@ sub vcl_recv {
 
 	# --- Wordpress specific configuration
 	
-	# Did not cache the RSS feed
-	if (req.url ~ "/feed") {
-		return (pass);
-	}
-
-	# Blitz hack
-        if (req.url ~ "/mu-.*") {
-                return (pass);
-        }
-
-	
 	# Did not cache the admin and login pages
-	if (req.url ~ "/wp-(login|admin)" || req.url ~ "preview=true") {
+	if (bereq.url ~ "/wp-(login|admin)" || bereq.url ~ "preview=true") {
 		return (pass);
 	}
 
