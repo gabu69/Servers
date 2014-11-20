@@ -24,5 +24,6 @@ Run on boot `sudo update-rc.d hhvm defaults` # RUN HHVM ON **REBOOT**
 ##Recommendations:
 ###NGINX
  * Optimize NGINX: https://rtcamp.com/tutorials/nginx/optimization/  
-** Install Varnish  
+
+## Install Varnish  
 https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-14-04-lts
