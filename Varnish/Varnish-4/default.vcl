@@ -199,6 +199,13 @@ sub vcl_backend_response {
 	
 	return (deliver);
 }
+
+sub vcl_purge {
+    # restart request
+    set req.http.X-Purge = "Yes";
+    return(restart);
+}
+
  
 # The routine when we deliver the HTTP request to the user
 # Last chance to modify headers that are sent to the client
