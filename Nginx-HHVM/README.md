@@ -5,6 +5,13 @@ Update repository and upgrade
   1.  https://downloads.mariadb.org/  
   2.  `mysql_secure_installation`  
 
+Hacer usuario, base de datos, password de la base de datos  
+ 1. `mysql -uroot -p`  
+ 2. `CREATE DATABASE basededatos;`  
+ 3. `GRANT ALL PRIVILEGES ON basededatos.* TO usuariomysql@localhost IDENTIFIED BY 'unacontrasena';`  
+ 4. `FLUSH PRIVILEGES;`  
+ 5. `exit`  
+
 ##Nginx (install latest):  
 `sudo apt-get install python-software-properties`  
 `sudo add-apt-repository ppa:nginx/stable`  
@@ -30,9 +37,15 @@ Run on boot:
 
 
 ## Configurar Sitio
- 1. `sudo nano /etc/nginx/sites-available/nombre.com`  
- 2.  
+ 1. `sudo nano /etc/nginx/sites-available/nombre.com`  <-- checar configuracion la tengo aqui en github
+ 2.  `sudo ln -s /etc/nginx/sites-available/nombre.com /etc/nginx/sites-enabled/nombre.com`  
+ 3.  `sudo mkdir -p /var/www/ejemplo.com/{logs,public_html}`  
+ 4.  `sudo chown -R www-data:www-data /var/www/`  
+ 5.  `cd /var/www/ejemplo.com`  
+ 6.  `sudo chown -R www-data:www-data public_html/`  
+ 7.  `sudo service nginx restart`  
 
+Se necesita tener un archivo index.html/index/index.php para que de permiso de ver ojo con eso
 ##Recommendations:
 ###NGINX
  * Optimize NGINX: https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration  
