@@ -4,7 +4,7 @@ server {
  root /var/www/ejemplo.com/public_html;
  access_log /var/www/ejemplo.com/logs/access.log;
  error_log /var/www/ejemplo.com/logs/error.log;
- index index.php;
+ index index.html index.php;
 
 include hhvm.conf;
 
