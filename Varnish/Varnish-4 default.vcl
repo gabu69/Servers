@@ -45,9 +45,11 @@ sub vcl_recv {
         # --- Wordpress specific configuration
 
         # Did not cache the admin and login pages
-        if (req.url ~ "wp-(login|admin)" || req.url ~ "preview=true") {
+        if (req.url ~ "wp-(login|admin)" || req.url ~ "preview=true" || req.url ~ "phpmyadmin") {
         return (pass);
         }
+
+        
         # Remove the "has_js" cookie
         set req.http.Cookie = regsuball(req.http.Cookie, "has_js=[^;]+(; )?", "");
         # Remove any Google Analytics based cookies
