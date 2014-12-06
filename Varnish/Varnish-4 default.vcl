@@ -45,7 +45,7 @@ sub vcl_recv {
         # --- Wordpress specific configuration
 
         # Did not cache the admin and login pages
-        if (!(bereq.url ~ "(wp-login|wp-admin|preview=true|phpmyadmin)")) {
+        if (req.url ~ "wp-(login|admin)" || req.url ~ "preview=true") {
         return (pass);
         }
         # Remove the "has_js" cookie
@@ -64,7 +64,6 @@ sub vcl_recv {
         if (req.http.cookie ~ "^ *$") {
                     unset req.http.cookie;
         }
-
         # Cache the following files extensions
         if (req.url ~ "\.(css|js|png|gif|jp(e)?g|swf|ico)") {
                 unset req.http.cookie;
@@ -133,14 +132,14 @@ sub vcl_backend_response {
                 unset beresp.http.cookie;
         }
         # Don't store backend
-        if (!(bereq.url ~ "(wp-login|wp-admin|preview=true|phpmyadmin)")) {
+        if (bereq.url ~ "wp-(login|admin)" || bereq.url ~ "preview=true") {
                 set beresp.uncacheable = true;
                 set beresp.ttl = 30s;
                 return (deliver);
         }
 
         # Only allow cookies to be set if we're in admin area
-                if (!(bereq.url ~ "(wp-login|wp-admin|preview=true|phpmyadmin)")) {
+                if (!(bereq.url ~ "(wp-login|wp-admin|preview=true)")) {
                 unset beresp.http.set-cookie;
         }
         # don't cache response to posted requests or those with basic auth
