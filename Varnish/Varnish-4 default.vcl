@@ -1,6 +1,6 @@
-#
-# This is an example VCL file for Varnish.
-#
+# sudo nano /etc/varnish/default.vcl
+# This is an example VCL file for Varnish. 
+# 
 # It does not do anything by default, delegating control to the builtin VCL. The builtin VCL is called when there is no explicit return statement.
 #
 # See the VCL chapters in the Users Guide at https://www.varnish-cache.org/docs/ and http://varnish-cache.org/trac/wiki/VCLExamples for more examples. Update of varnish 4 to work with
