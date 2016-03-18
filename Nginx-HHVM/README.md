@@ -2,7 +2,7 @@
 Update repository and upgrade  
 `apt-get update && apt-get upgrade`  
 ##Mariadb Intall  
-  1.  https://downloads.mariadb.org/  
+  1.  https://downloads.mariadb.org/mariadb/repositories/#mirror=digitalocean-nyc  
   2.  `mysql_secure_installation`  
 
 Hacer usuario, base de datos, password de la base de datos  
