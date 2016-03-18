@@ -51,4 +51,4 @@ Se necesita tener un archivo index.html/index/index.php para que de permiso de v
  * Optimize NGINX: https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration  
 
 ## Install Varnish  
-https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-14-04-lts
+https://www.varnish-cache.org/installation/ubuntu
