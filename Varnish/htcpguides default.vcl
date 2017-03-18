@@ -6,8 +6,10 @@ import std;
 backend default {
   .host = "127.0.0.1";
   .port = "8080";
-  .first_byte_timeout = 60s;
-  .connect_timeout = 300s;
+  .connect_timeout = 600s;
+  .first_byte_timeout = 600s;
+  .between_bytes_timeout = 600s;
+  .max_connections = 1000;
 }
  
 # SET THE ALLOWED IP OF PURGE REQUESTS
@@ -199,8 +201,8 @@ sub vcl_backend_response {
   # ##########################################################
   if (!(bereq.url ~ "wp-(login|admin)") && !bereq.http.cookie ~ "wordpress_logged_in|resetpass" ) {
     unset beresp.http.set-cookie;
-    set beresp.ttl = 1w;
-    set beresp.grace =3d;
+    set beresp.ttl = 10m;
+    set beresp.grace =30s;
   }
 
   if (beresp.ttl <= 0s ||
