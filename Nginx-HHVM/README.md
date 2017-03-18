@@ -240,6 +240,60 @@ DAEMON_OPTS="-a :80 \
 
 Agregamos alguna de estas versiones del [default.vcl](https://github.com/gabu69/Servers/tree/master/Varnish)
 
+### Nota si no funciona varnish
+You might run into some issues with installing Varnish on Ubuntu 16. If you get an error, check the process that’s running on your server.
+
+`ps aux | grep vcache`
+```
+vcache 15569 0.0 0.7 125044 7816 ? Ss 08:20 0:00 /usr/sbin/varnishd -j unix,user=vcache -F -a :6081 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
+vcache 15581 0.0 9.3 272012 94900 ? Sl 08:20 0:00 /usr/sbin/varnishd -j unix,user=vcache -F -a :6081 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
+```
+You may see that the port is still set to 6081 instead the one you set in /etc/default/varnish. What this means is that the systemd service bypassed the configuration file.
+
+In order to solve the problem, edit the file /lib/systemd/system/varnish.service and change the port 6081 to 80. Also, you can change the malloc,256 for a different memory value at this time.
+
+`nano /lib/systemd/system/varnish.service`
+```
+[...]
+ExecStart=/usr/sbin/varnishd -j unix,user=vcache -F -a :6081 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
+[...]
+```
+to
+```
+[...]
+ExecStart=/usr/sbin/varnishd -j unix,user=vcache -F -a :80 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
+[...]
+```
+Reload and restart Apache and Varnish once more.
+```
+systemctl daemon-reload
+systemctl restart nginx.service
+systemctl restart varnish.service
+```
+Check your Varnish stats to make sure everything’s working correctly.
+
+`varnishstat`
+
+Finally, ensure that your web server and Varnish are operating normally.
+
+`curl -I http://your_ip`
+
+```
+HTTP/1.1 200 OK
+Date: Wed, 22 Jun 2016 08:32:03 GMT
+Server: Apache/2.4.18 (Ubuntu)
+Last-Modified: Wed, 22 Jun 2016 08:18:20 GMT
+Vary: Accept-Encoding
+Content-Type: text/html
+X-Varnish: 32771
+Age: 0
+Via: 1.1 varnish-v4
+ETag: W/"2c39-535d9949460b3-gzip"
+Accept-Ranges: bytes
+Connection: keep-alive
+```
+With Varnish installed, you can rest easy that your site will survive an unexpected surge of visitors and be better protected against any malicious attacks. If this guide was helpful to you, kindly share it with others who may also be interested.
+
 ### Cambiamos Nginx
 `sudo nano /etc/nginx/sites-available/sitio.com`
 
@@ -263,30 +317,3 @@ sudo service varnish restart
 sudo apt-get install fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
