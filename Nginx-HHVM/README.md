@@ -201,3 +201,88 @@ sudo chown -R www-data:www-data /var/www/
 sudo chown -R www-data:www-data /var/www/SITIO.compublic_html/
 chown -R www-data:www-data /var/www/SITIO.com/
 ```
+## 7. Varnish
+
+### Instalamos y configuramos Varnish
+```
+sudo apt-get install varnish
+sudo nano /etc/default/varnish
+```
+```
+# Configuration file for varnish
+#
+# /etc/init.d/varnish expects the variables $DAEMON_OPTS, $NFILES and $MEMLOCK
+# to be set from this shell script fragment.
+#
+# Note: If systemd is installed, this file is obsolete and ignored.  You will
+# need to copy /lib/systemd/system/varnish.service to /etc/systemd/system/ and
+# edit that file.
+
+# Should we start varnishd at boot?  Set to "no" to disable.
+START=yes
+
+# Maximum number of open files (for ulimit -n)
+NFILES=131072
+
+# Maximum locked memory size (for ulimit -l)
+# Used for locking the shared memory log in memory.  If you increase log size,
+# you need to increase this number as well
+MEMLOCK=82000
+
+DAEMON_OPTS="-a :80 \
+             -T localhost:6082 \
+             -f /etc/varnish/default.vcl \
+             -S /etc/varnish/secret \
+             -s malloc,10G"
+```
+
+`sudo nano /etc/varnish/default.vcl`
+
+Agregamos alguna de estas versiones del [default.vcl](https://github.com/gabu69/Servers/tree/master/Varnish)
+
+### Cambiamos Nginx
+`sudo nano /etc/nginx/sites-available/sitio.com`
+
+Cambiamos a:
+
+` listen  127.0.0.1:8080; ## listen for ipv4; this line is default and implied`
+
+Borramos: 
+
+`sudo rm /etc/nginx/sites-enabled/default`
+
+Reiniciamos todo:
+
+```
+sudo service nginx restart
+sudo service varnish restart
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
