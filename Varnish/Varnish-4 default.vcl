@@ -1,6 +1,6 @@
 # sudo nano /etc/varnish/default.vcl
-# This is an example VCL file for Varnish. 
-# 
+# This is an example VCL file for Varnish.
+#
 # It does not do anything by default, delegating control to the builtin VCL. The builtin VCL is called when there is no explicit return statement.
 #
 # See the VCL chapters in the Users Guide at https://www.varnish-cache.org/docs/ and http://varnish-cache.org/trac/wiki/VCLExamples for more examples. Update of varnish 4 to work with
@@ -45,11 +45,11 @@ sub vcl_recv {
         # --- Wordpress specific configuration
 
         # Did not cache the admin and login pages
-        if (req.url ~ "wp-(login|admin)" || req.url ~ "preview=true" || req.url ~ "phpmyadmin") {
+        if (req.url ~ "wp-(login|admin)" || req.url ~ "preview=true" || req.url ~ "tienda" || req.url ~ "instant" || req.url ~ "phpmyadmin") {
         return (pass);
         }
 
-        
+
         # Remove the "has_js" cookie
         set req.http.Cookie = regsuball(req.http.Cookie, "has_js=[^;]+(; )?", "");
         # Remove any Google Analytics based cookies
@@ -134,14 +134,14 @@ sub vcl_backend_response {
                 unset beresp.http.cookie;
         }
         # Don't store backend
-        if (bereq.url ~ "wp-(login|admin)" || bereq.url ~ "preview=true" || bereq.url ~ "phpmyadmin") {
+        if (bereq.url ~ "wp-(login|admin)" || bereq.url ~ "preview=true"  || bereq.url ~ "tienda" || bereq.url ~ "instant" || bereq.url ~ "phpmyadmin") {
                 set beresp.uncacheable = true;
                 set beresp.ttl = 30s;
                 return (deliver);
         }
 
         # Only allow cookies to be set if we're in admin area
-                if (!(bereq.url ~ "(wp-login|wp-admin|preview=true|phpmyadmin)")) {
+                if (!(bereq.url ~ "(wp-login|wp-admin|preview=true|instant|tienda)")) {
                 unset beresp.http.set-cookie;
         }
         # don't cache response to posted requests or those with basic auth
@@ -165,7 +165,7 @@ sub vcl_backend_response {
                 return (deliver);
         }
         # A TTL of 2h
-        set beresp.ttl = 2h;
+        set beresp.ttl = 10m;
         # Define the default grace period to serve cached content
         set beresp.grace = 30s;
 
