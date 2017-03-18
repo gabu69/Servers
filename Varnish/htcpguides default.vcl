@@ -1,4 +1,4 @@
-/* SET THE HOST AND PORT OF WORDPRESS
+/* SET THE HOST AND PORT OF WORDPRESS http://www.htpcguides.com/configure-wordpress-varnish-4-cache-with-apache-or-nginx/
  * *********************************************************/
 vcl 4.0;
 import std;
