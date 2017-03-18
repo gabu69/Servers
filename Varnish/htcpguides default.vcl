@@ -15,7 +15,7 @@ backend default {
 acl purge {
   "localhost";
   "127.0.0.1";
-  "Web.Server.IP";
+  "66.228.61.182";
 }
 
 #THE RECV FUNCTION
