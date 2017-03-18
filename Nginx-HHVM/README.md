@@ -258,7 +258,11 @@ sudo service nginx restart
 sudo service varnish restart
 ```
 
-
+## 8. Fail2ban
+```
+sudo apt-get install fail2ban
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+```
 
 
 
