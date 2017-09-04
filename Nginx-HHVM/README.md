@@ -184,6 +184,13 @@ exit
 mv wp-config-sample.php wp-config.php
 nano wp-config.php
 ```
+
+Asimismo, agregamos al final del **wp-config.php** el server push de Cloudflare:
+```
+define('WP_DEBUG', false);
+define('CLOUDFLARE_HTTP2_SERVER_PUSH_ACTIVE', true);
+```
+
 6. Y como se ve en la imagen, añadimos en ese fichero los datos de la base de datos que acabamos de crear. Ahora nos aseguramos de que el directorio raíz tiene los propietarios adecuados, y reiniciamos nginx:
 ```
 cd /var/www/SITIO.com
