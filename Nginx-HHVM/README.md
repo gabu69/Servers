@@ -168,6 +168,7 @@ sudo rm latest.tar.gz
 3. Es el momento de crear la base de datos para nuestro blog. Para ello, entramos en el gestor de base de datos con el siguiente comando (se nos pedirá la contraseña del administrador de la base de datos):
 
 `mysql -uroot -p`
+
 4. Tras lo cual podremos crear la base de datos y dejarla preparada con los siguientes comandos. Atención a dos cosas: 
    - El uso de mayúsculas es opcional, pero no os olvidéis de los puntos y coma salvo en el exit final, y 
    - Elegid de nuevo una contraseña específica para esa base de datos que solo afectará a ese blog en particular.
