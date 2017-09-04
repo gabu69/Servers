@@ -206,7 +206,7 @@ http://SITIO.com/
 9. Corremots algunos ultimos detalles
 ```
 sudo chown -R www-data:www-data /var/www/
-sudo chown -R www-data:www-data /var/www/SITIO.compublic_html/
+sudo chown -R www-data:www-data /var/www/SITIO.com/public_html/
 chown -R www-data:www-data /var/www/SITIO.com/
 ```
 ## 7. Varnish
