@@ -272,7 +272,7 @@ to
 ExecStart=/usr/sbin/varnishd -j unix,user=vcache -F -a :80 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
 [...]
 ```
-Reload and restart Apache and Varnish once more.
+Reload and restart Nginx and Varnish once more.
 ```
 systemctl daemon-reload
 systemctl restart nginx.service
