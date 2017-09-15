@@ -114,33 +114,43 @@ sudo nano /etc/nginx/sites-available/sitio.com
 
 ```
 server {
- server_name IP;
- listen  80;
- root /var/www/SITIO.com/public_html;
- access_log off;
- error_log /var/www/SITIO.com/logs/error.log;
- index index.html index.htm index.php;
+        listen 80 default_server;
+        server_name 66.228.48.246;
 
-include hhvm.conf;
+        root /var/www/SITIO.com/public_html;
 
-location / {
-    try_files $uri $uri/ /index.php?q=$uri&$args;
-    }
+        error_log /var/www/SITIO.com/logs/error.log;
+        access_log off;
 
-location ~ /\.ht {
-    deny all;
-    }
+        # Add index.php to the list if you are using PHP
+        index index.php index.html index.htm index.nginx-debian.html;
 
-location ~ \.php$ {
-    fastcgi_index index.php;
-    fastcgi_keep_conn on;
-    include /etc/nginx/fastcgi_params;
-    fastcgi_pass 127.0.0.1:9000;
-    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    }
+        location / {
+                try_files $uri $uri/ /index.php?q=$uri&$args;
+        }
 
-##### Enabling HTTP Strict Transport Security on Your Server
-add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+         location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include fastcgi_params;
+        }
+
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #
+        location ~ /\.ht {
+                deny all;
+        }
+
+        #### Enabling HTTP Strict Transport Security on Your Server
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+
+
 }
 ```
 3. Y creamos un enlace desde el directorio /etc/nginx/sites-enabled para que Nginx sepa que ese nuevo sitio web estará habilitado: 
