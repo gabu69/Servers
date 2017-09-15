@@ -3,8 +3,7 @@
 ## 1. Actualizamos el servidor
 
 ```
-sudo apt update
-sudo apt upgrade
+apt-get update && apt-get upgrade
 ```
 
 ## 2. Instalamos Nginx
