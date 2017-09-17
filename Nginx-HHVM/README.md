@@ -245,6 +245,7 @@ chown -R www-data:www-data /var/www/SITIO.com/
 
 ### Instalamos y configuramos Varnish
 ```
+https://packagecloud.io/varnishcache/varnish5/install#bash
 sudo apt-get install varnish
 sudo nano /etc/default/varnish
 ```
@@ -273,12 +274,12 @@ DAEMON_OPTS="-a :80 \
              -T localhost:6082 \
              -f /etc/varnish/default.vcl \
              -S /etc/varnish/secret \
-             -s malloc,10G"
+             -s malloc,1g"
 ```
 
 `sudo nano /etc/varnish/default.vcl`
 
-Agregamos alguna de estas versiones del [default.vcl](https://github.com/gabu69/Servers/tree/master/Varnish)
+Agregamos [este VCL](https://drive.google.com/drive/folders/0B1BTCfJZ5K6bS1hVY1k2YXNOYWM?usp=sharing) para la version 5.X 
 
 ### Nota si no funciona varnish
 You might run into some issues with installing Varnish on Ubuntu 16. If you get an error, check the process that’s running on your server.
@@ -288,20 +289,20 @@ You might run into some issues with installing Varnish on Ubuntu 16. If you get 
 vcache 15569 0.0 0.7 125044 7816 ? Ss 08:20 0:00 /usr/sbin/varnishd -j unix,user=vcache -F -a :6081 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
 vcache 15581 0.0 9.3 272012 94900 ? Sl 08:20 0:00 /usr/sbin/varnishd -j unix,user=vcache -F -a :6081 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
 ```
-You may see that the port is still set to 6081 instead the one you set in /etc/default/varnish. What this means is that the systemd service bypassed the configuration file.
+Seguimos esta guia: http://deshack.net/how-to-varnish-listen-port-80-systemd/
 
-In order to solve the problem, edit the file /lib/systemd/system/varnish.service and change the port 6081 to 80. Also, you can change the malloc,256 for a different memory value at this time.
-
-`nano /lib/systemd/system/varnish.service`
+` cp /lib/systemd/system/varnish.service /etc/systemd/system/`
+` nano /etc/systemd/system/varnish.service`
+Y cambiamos el:
 ```
 [...]
 ExecStart=/usr/sbin/varnishd -j unix,user=vcache -F -a :6081 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
 [...]
 ```
-to
+Por
 ```
 [...]
-ExecStart=/usr/sbin/varnishd -j unix,user=vcache -F -a :80 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,256m
+ExecStart=/usr/sbin/varnishd -a :80 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,1g
 [...]
 ```
 Reload and restart Nginx and Varnish once more.
