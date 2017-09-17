@@ -1,5 +1,8 @@
 # Ubuntu 16.04
-
+  
+* https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04   
+* https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lemp-on-ubuntu-16-04   
+  
 ## 1. Actualizamos el servidor
 
 ```
@@ -7,15 +10,7 @@ apt-get update && apt-get upgrade
 ```
 
 ## 2. Instalamos Nginx
-1. Instalar
-````
-sudo apt-get install software-properties-common python-software-properties
-sudo add-apt-repository ppa:nginx/stable
-sudo apt-get update
-sudo apt-get install nginx
-sudo /etc/init.d/nginx restart
-sudo nginx -t
-````
+1. `sudo apt-get install nginx`
 2. Configurar Nginx 
 `sudo nano /etc/nginx/nginx.conf`
 ````
@@ -28,6 +23,7 @@ events {
 
     # optmized to serve many clients with each thread, essential for linux
     use epoll;
+
     # accept as many connections as possible, may flood worker connections if set too low
     multi_accept on;
 }
@@ -70,7 +66,6 @@ http {
         ##
         # Virtual Host Configs
         ##
-        include /etc/nginx/conf.d/*.conf;
         include /etc/nginx/sites-enabled/*;
 
 
@@ -89,19 +84,33 @@ open_file_cache_errors   on;
 }
 
 ````
+3. Corremos
+````
+sudo systemctl reload nginx
+````
+4. Actualizamos Nginx a la ultima version (se tiene que actualizar espues del setup anterior sino tendremos problemas): https://www.linuxbabe.com/nginx/nginx-latest-version-ubuntu-16-04-16-10
+
 ## 3. MySQL - MariaDB
-1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=digitalocean-sfo)
+1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=rafal&distro=Ubuntu&distro_release=xenial--ubuntu_xenial&version=10.2)
 2. Corremos `mysql_secure_installation`
 
-## 4. HHVM
-1. [Descargar HHVM](https://docs.hhvm.com/hhvm/installation/linux)
+## 4. PHP7
+1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
 ```
-sudo /usr/share/hhvm/install_fastcgi.sh
-sudo /etc/init.d/hhvm restart
-sudo /etc/init.d/nginx restart
-sudo ln -s $(which hhvm) /usr/local/bin/php
-sudo update-rc.d hhvm defaults
+sudo apt-get install php-fpm php-mysql php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc php7.0-xml
+```
+Tenemos que asegurar la instalacion
+```
+sudo nano /etc/php/7.0/fpm/php.ini
+```
+Buscamos **;cgi.fix_pathinfo=1**, descomentamos y dejamos como:
+```
+cgi.fix_pathinfo=0
+```
+Salvamos y reiniciamos PHP
+```
+sudo systemctl restart php7.0-fpm
 ```
 ## 5. Configuramos Nginx para el servidor
 1. Configuramos la carpeta y el archivo del servidor
@@ -156,6 +165,20 @@ server {
 3. Y creamos un enlace desde el directorio /etc/nginx/sites-enabled para que Nginx sepa que ese nuevo sitio web estará habilitado: 
 
 `sudo ln -s /etc/nginx/sites-available/SITIO.com /etc/nginx/sites-enabled/SITIO.com`
+## 6. Revisamos Este bien todo
+Usando de ejemplo https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-5-create-a-php-file-to-test-configuration:
+```
+nano /var/www/SITIO.com/public_html/info.php
+```
+Metemos este codigo
+```
+<?php
+phpinfo();
+```
+Revisamos en **http://IP_DEL_SERVIDO/Rinfo.php** y si corre todo, todo esta bien y luego borramos la info del PHP
+```
+sudo rm /var/www/SITIO.com/public_html/info.php
+```
 
 ## 6. WordPress en public_html:
 
