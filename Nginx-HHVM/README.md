@@ -244,8 +244,9 @@ chown -R www-data:www-data /var/www/SITIO.com/
 ## 7. Varnish
 
 ### Instalamos y configuramos Varnish
+[Varnish 4](https://packagecloud.io/varnishcache/varnish41/install) ó  [Varnish 5](https://packagecloud.io/varnishcache/varnish5/install#bash)
 ```
-https://packagecloud.io/varnishcache/varnish5/install#bash
+sudo apt-get update
 sudo apt-get install varnish
 sudo nano /etc/default/varnish
 ```
@@ -279,9 +280,15 @@ DAEMON_OPTS="-a :80 \
 
 `sudo nano /etc/varnish/default.vcl`
 
-Agregamos [este VCL](https://drive.google.com/drive/folders/0B1BTCfJZ5K6bS1hVY1k2YXNOYWM?usp=sharing) para la version 5.X 
+Modificamos el defaul VCL segun la version que instalamos:
 
-### Nota si no funciona varnish
+ * [Version 4.X](https://www.htpcguides.com/configure-wordpress-varnish-4-cache-with-apache-or-nginx/)   
+ * [Version 5.X](https://raw.githubusercontent.com/gabu69/Servers/master/Varnish/devault.vcl%20V5)   
+
+  
+### Nota No funcionara varnish aun, 
+UBUNTU 16 tiene problemas que se tienen que arrera, en si el  **etc/default/varnish** n oservira
+
 You might run into some issues with installing Varnish on Ubuntu 16. If you get an error, check the process that’s running on your server.
 
 `ps aux | grep vcache`
@@ -305,36 +312,6 @@ Por
 ExecStart=/usr/sbin/varnishd -a :80 -T localhost:6082 -f /etc/varnish/default.vcl -S /etc/varnish/secret -s malloc,1g
 [...]
 ```
-Reload and restart Nginx and Varnish once more.
-```
-systemctl daemon-reload
-systemctl restart nginx.service
-systemctl restart varnish.service
-```
-Check your Varnish stats to make sure everything’s working correctly.
-
-`varnishstat`
-
-Finally, ensure that your web server and Varnish are operating normally.
-
-`curl -I http://your_ip`
-
-```
-HTTP/1.1 200 OK
-Date: Wed, 22 Jun 2016 08:32:03 GMT
-Server: Apache/2.4.18 (Ubuntu)
-Last-Modified: Wed, 22 Jun 2016 08:18:20 GMT
-Vary: Accept-Encoding
-Content-Type: text/html
-X-Varnish: 32771
-Age: 0
-Via: 1.1 varnish-v4
-ETag: W/"2c39-535d9949460b3-gzip"
-Accept-Ranges: bytes
-Connection: keep-alive
-```
-With Varnish installed, you can rest easy that your site will survive an unexpected surge of visitors and be better protected against any malicious attacks. If this guide was helpful to you, kindly share it with others who may also be interested.
-
 ### Cambiamos Nginx
 `sudo nano /etc/nginx/sites-available/sitio.com`
 
@@ -345,13 +322,15 @@ Cambiamos a:
 Borramos: 
 
 `sudo rm /etc/nginx/sites-enabled/default`
-
-Reiniciamos todo:
-
 ```
-sudo service nginx restart
-sudo service varnish restart
+systemctl daemon-reload
+systemctl restart nginx.service
+systemctl restart varnish.service
 ```
+Check your Varnish stats to make sure everything’s working correctly.
+
+`varnishstat`
+
 
 ## 8. Fail2ban
 ```
