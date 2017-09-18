@@ -98,7 +98,7 @@ sudo systemctl reload nginx
 1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
 ```
-sudo apt-get install php-fpm php-mysql php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc php7.0-xml
+sudo apt-get install php-fpm php-mysql php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc php7.0-xml php-memcached
 ```
 Tenemos que asegurar la instalacion
 ```
@@ -241,7 +241,54 @@ sudo chown -R www-data:www-data /var/www/
 sudo chown -R www-data:www-data /var/www/SITIO.com/public_html/
 chown -R www-data:www-data /var/www/SITIO.com/
 ```
-## 7. Varnish
+## 7. Cloudflare Railgun y page rules para el cache del HTML
+
+### Instalamos Railgun para Ubuntu
+
+Preparamos la instalacion, que el servidor acepte las IPs de Cloudflare
+```
+for i in `curl https://www.cloudflare.com/ips-v4`; do ufw allow proto tcp from $i to any port 2408; done  
+for i in `curl https://www.cloudflare.com/ips-v4`; do iptables -I INPUT -p tcp -s $i --dport 2408 -j ACCEPT; done
+ ``` 
+Metemos el repositorio e instalamos
+```
+echo 'deb http://pkg.cloudflare.com/ xenial main' | sudo tee /etc/apt/sources.list.d/cloudflare-main.list  
+curl -C - https://pkg.cloudflare.com/pubkey.gpg | sudo apt-key add -  
+sudo apt-get update  
+apt-get install railgun-stable  
+```
+Editamos **nano /etc/railgun/railgun.conf**  y metemos la ip y el token de https://www.cloudflare.com/a/account/my-account
+```
+# Activation details
+#
+#     Website Owners: activation.token can be found at
+#     https://www.cloudflare.com/a/account/my-account
+#
+#     CloudFlare Hosting Partners: activation.token can be found at
+#     https://partners.cloudflare.com
+#
+# Set activation.railgun_host to the external IP (recommended), or a hostname that
+# resolves to the external IP, of your Railgun instance. Note that the hostname
+# will not be re-resolved unless Railgun is restarted.
+activation.token = db5447d38352aca9a73fc19f871a9a40
+activation.railgun_host = 66.228.48.246
+```
+Aumentamos la memoria ram de memcached a 2GB al menos:
+ ```
+ nano /etc/memcached.conf
+ ```
+Reiniciamos memcached y iniciamos railgun
+```
+/etc/init.d/memcached restart  
+/etc/init.d/railgun start  
+```
+Por ultimo revisamos que todo este bien
+```
+(GNU/Linux)
+$ netstat -plnt | grep 2408
+tcp        0      0 :::2408                     :::*                        LISTEN      2981/rg-listener
+```
+## 8. Si no usamos cloudflare enterprise metemos Varnish
 
 ### Instalamos y configuramos Varnish
 [Varnish 4](https://packagecloud.io/varnishcache/varnish41/install) ó  [Varnish 5](https://packagecloud.io/varnishcache/varnish5/install#bash)
