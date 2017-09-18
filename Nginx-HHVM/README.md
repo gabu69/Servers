@@ -123,7 +123,7 @@ sudo nano /etc/nginx/sites-available/sitio.com
 
 ```
 server {
-        listen 80 default_server;
+        listen 80;
         server_name 66.228.48.246;
 
         root /var/www/SITIO.com/public_html;
