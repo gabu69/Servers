@@ -174,39 +174,55 @@ Save and close the file when you are finished.
  `sudo systemctl restart nginx`
 
 ## 3. MySQL - MariaDB
-1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=rafal&distro=Ubuntu&distro_release=xenial--ubuntu_xenial&version=10.2)
+1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=digitalocean-sfo&version=10.3&distro=Ubuntu&distro_release=bionic--ubuntu_bionic)
 2. Corremos `mysql_secure_installation`
+```
+sudo systemctl stop mariadb.service
+sudo systemctl start mariadb.service
+sudo systemctl enable mariadb.service
+```  
+## 4. PHP **7.3**
+Agregamos el repositorio de ondrej
+`sudo apt-get install software-properties-common`
+`sudo add-apt-repository ppa:ondrej/php`
 
-## 4. PHP7
 1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
 ```
-sudo apt-get install php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip php-mcrypt php-memcached
+sudo apt-get install php7.3-fpm php7.3-common php7.3-mbstring php7.3-xmlrpc php7.3-soap php7.3-gd php7.3-xml php7.3-mysql php7.3-cli php7.3-zip php7.3-curl php7.3-intl php7.3-memcached
 ```
 Tenemos que asegurar la instalacion
 ```
-sudo nano /etc/php/7.0/fpm/php.ini
+sudo nano /etc/php/7.3/fpm/php.ini
 ```
-Buscamos **;cgi.fix_pathinfo=1**, descomentamos y dejamos como:
+Buscamos y dejamos todas estas opciones:
 ```
-cgi.fix_pathinfo=0
+file_uploads = On
+allow_url_fopen = On
+memory_limit = 256M
+upload_max_filesize = 100M
+cgi.fix_pathinfo = 0
+max_execution_time = 360
+date.timezone = America/Mexico_city
 ```
 Salvamos y reiniciamos PHP
 ```
-sudo systemctl restart php7.0-fpm
+sudo systemctl stop php7.3-fpm.service
+sudo systemctl start php7.3-fpm.service
+sudo systemctl enable php7.3-fpm.service
 ```
 
 ## 6. Revisamos Este bien todo
 Usando de ejemplo https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-5-create-a-php-file-to-test-configuration:
 ```
-nano /var/www/SITIO.com/public_html/info.php
+nano /var/www/html/public/info.php
 ```
 Metemos este codigo
 ```
 <?php
 phpinfo();
 ```
-Revisamos en **http://IP_DEL_SERVIDO/Rinfo.php** y si corre todo, todo esta bien y luego borramos la info del PHP
+Revisamos en **http://IP_DEL_SERVIDOR/info.php** y si corre todo, todo esta bien y luego borramos la info del PHP
 ```
 sudo rm /var/www/SITIO.com/public_html/info.php
 ```
