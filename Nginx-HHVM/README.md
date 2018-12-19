@@ -22,11 +22,11 @@ include /etc/nginx/modules-enabled/*.conf;
 events {
         worker_connections 1000;
 
-    # optmized to serve many clients with each thread, essential for linux
-    use epoll;
+        # optmized to serve many clients with each thread, essential for linux
+        use epoll;
 
-    # accept as many connections as possible, may flood worker connections if set too low
-    multi_accept on;
+        # accept as many connections as possible, may flood worker connections if set too low
+        multi_accept on;
 }
 
 http {
