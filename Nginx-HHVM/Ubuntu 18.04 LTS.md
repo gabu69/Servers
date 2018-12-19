@@ -1,4 +1,4 @@
-# Ubuntu 16.04
+# Ubuntu 18.04
   
 * https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04   
 * https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lemp-on-ubuntu-16-04   
@@ -90,13 +90,88 @@ http {
         open_file_cache_errors   on;
 
 }
-
 ````
 3. Corremos
 ````
-sudo systemctl reload nginx
+sudo systemctl stop nginx.service
+sudo systemctl start nginx.service
+sudo systemctl enable nginx.service
+systemctl status nginx
 ````
-4. Actualizamos Nginx a la ultima version (se tiene que actualizar espues del setup anterior sino tendremos problemas): https://www.linuxbabe.com/nginx/nginx-latest-version-ubuntu-16-04-16-10
+4. Creamos directorios para los sitios
+````
+sudo mkdir -p /var/www/html/{logs,public}
+sudo chown -R www-data:www-data /var/www/
+sudo chmod -R 755 /var/www/html
+````
+### A. Configuramos Nginx para el servidor
+1. Configuramos la carpeta y el archivo del servidor
+````
+cd /etc/nginx/sites-available/
+rm -rf *
+rm -rf /etc/nginx/sites-enabled/default
+sudo nano /etc/nginx/sites-available/public
+````
+2. Pegamos el siguiente codigo acorde:
+```
+server {
+        listen 80;
+        server_name reban.com www.reban.com;
+        root /var/www/html/public;
+
+        # Logs
+        error_log /var/www/html/logs/error.log;
+        access_log off;
+
+        # Add index.php to the list if you are using PHP
+        index index.php index.html index.htm index.nginx-debian.html;
+
+        location / {
+                try_files $uri $uri/ /index.php?q=$uri&$args;
+        }
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+         location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include fastcgi_params;
+        }
+}
+
+
+```
+3. Y creamos un enlace desde el directorio /etc/nginx/sites-enabled para que Nginx sepa que ese nuevo sitio web estará habilitado: 
+
+`sudo ln -s /etc/nginx/sites-available/public /etc/nginx/sites-enabled/`
+
+4. Test for syntax errors:   
+
+ `sudo nginx -t`
+
+5. Next, create a sample index.html page using nano or your favorite editor:
+
+ `nano /var/www/html/public/index.html`
+ 
+Inside, add the following sample HTML:
+```
+<html>
+    <head>
+        <title>Welcome to Example.com!</title>
+    </head>
+    <body>
+        <h1>Success!  The example.com server block is working!</h1>
+    </body>
+</html>
+```
+Save and close the file when you are finished.
+
+5. Restart Nginx to enable your changes:
+
+ `sudo systemctl restart nginx`
 
 ## 3. MySQL - MariaDB
 1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=rafal&distro=Ubuntu&distro_release=xenial--ubuntu_xenial&version=10.2)
@@ -120,59 +195,7 @@ Salvamos y reiniciamos PHP
 ```
 sudo systemctl restart php7.0-fpm
 ```
-## 5. Configuramos Nginx para el servidor
-1. Configuramos la carpeta y el archivo del servidor
-```
-cd /etc/nginx/sites-available/
-rm -rf *
-sudo nano /etc/nginx/sites-available/sitio.com
-```
-2. Agregamso el codigo acorde
 
-```
-server {
-        listen 80;
-        server_name 66.228.48.246;
-
-        root /var/www/SITIO.com/public_html;
-
-        error_log /var/www/SITIO.com/logs/error.log;
-        access_log off;
-
-        # Add index.php to the list if you are using PHP
-        index index.php index.html index.htm index.nginx-debian.html;
-
-        location / {
-                try_files $uri $uri/ /index.php?q=$uri&$args;
-        }
-
-        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-        #
-         location ~ \.php$ {
-                try_files $uri =404;
-                fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
-                fastcgi_index index.php;
-                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-                include fastcgi_params;
-        }
-
-        # deny access to .htaccess files, if Apache's document root
-        # concurs with nginx's one
-        #
-        location ~ /\.ht {
-                deny all;
-        }
-
-        #### Enabling HTTP Strict Transport Security on Your Server
-        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
-
-
-}
-```
-3. Y creamos un enlace desde el directorio /etc/nginx/sites-enabled para que Nginx sepa que ese nuevo sitio web estará habilitado: 
-
-`sudo ln -s /etc/nginx/sites-available/SITIO.com /etc/nginx/sites-enabled/SITIO.com`
 ## 6. Revisamos Este bien todo
 Usando de ejemplo https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-5-create-a-php-file-to-test-configuration:
 ```
