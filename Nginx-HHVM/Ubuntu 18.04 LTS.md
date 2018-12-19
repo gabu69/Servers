@@ -224,7 +224,7 @@ phpinfo();
 ```
 Revisamos en **http://IP_DEL_SERVIDOR/info.php** y si corre todo, todo esta bien y luego borramos la info del PHP
 ```
-sudo rm /var/www/SITIO.com/public_html/info.php
+sudo rm /var/www/html/public/info.php
 ```
 
 ## 6. WordPress en public_html:
