@@ -15,11 +15,12 @@ apt-get update && apt-get upgrade
 `sudo nano /etc/nginx/nginx.conf`
 ````
 user www-data;
-worker_processes 6;
+worker_processes 1;
 pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
 
 events {
-        worker_connections 6000;
+        worker_connections 1000;
 
     # optmized to serve many clients with each thread, essential for linux
     use epoll;
