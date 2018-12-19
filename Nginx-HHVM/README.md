@@ -39,14 +39,20 @@ http {
         types_hash_max_size 2048;
         # server_tokens off;
 
- ### File max size 20mb ###
- client_max_body_size 30m;
+        ### File max size 30mb ###
+        client_max_body_size 30m;
 
         # server_names_hash_bucket_size 64;
         # server_name_in_redirect off;
 
         include /etc/nginx/mime.types;
         default_type application/octet-stream;
+
+        ##
+        # SSL Settings
+        ##
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
+        ssl_prefer_server_ciphers on;
 
         ##
         # Logging Settings
@@ -67,20 +73,21 @@ http {
         ##
         # Virtual Host Configs
         ##
+        include /etc/nginx/conf.d/*.conf;
         include /etc/nginx/sites-enabled/*;
 
 
-fastcgi_buffers 8 16k;
-fastcgi_buffer_size 32k;
-fastcgi_connect_timeout 300;
-fastcgi_send_timeout 300;
-fastcgi_read_timeout 300;
+        fastcgi_buffers 8 16k;
+        fastcgi_buffer_size 32k;
+        fastcgi_connect_timeout 300;
+        fastcgi_send_timeout 300;
+        fastcgi_read_timeout 300;
 
-### Filehandle cache
-open_file_cache          max=10000 inactive=20s;
-open_file_cache_valid    60s;
-open_file_cache_min_uses 3;
-open_file_cache_errors   on;
+        ### Filehandle cache
+        open_file_cache          max=10000 inactive=20s;
+        open_file_cache_valid    60s;
+        open_file_cache_min_uses 3;
+        open_file_cache_errors   on;
 
 }
 
