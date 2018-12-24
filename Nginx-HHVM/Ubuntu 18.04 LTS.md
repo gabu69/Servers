@@ -73,7 +73,6 @@ http {
         ##
         # Virtual Host Configs
         ##
-        include /etc/nginx/conf.d/*.conf;
         include /etc/nginx/sites-enabled/*;
 
 
@@ -141,8 +140,6 @@ server {
                 include fastcgi_params;
         }
 }
-
-
 ```
 3. Y creamos un enlace desde el directorio /etc/nginx/sites-enabled para que Nginx sepa que ese nuevo sitio web estará habilitado: 
 
