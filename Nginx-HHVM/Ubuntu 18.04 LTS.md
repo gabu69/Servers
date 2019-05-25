@@ -7,11 +7,14 @@
 
 ```
 apt-get update && apt-get upgrade
+sudo apt-get dist-upgrade
+tzselect
 ```
 
 ## 2. Instalamos Nginx
-1. `sudo apt-get install nginx`
-2. Configurar Nginx 
+`sudo apt-get install nginx`
+1. Configuramos Nginx   
+
 `sudo nano /etc/nginx/nginx.conf`
 ````
 user www-data;
@@ -170,6 +173,8 @@ Save and close the file when you are finished.
 
  `sudo systemctl restart nginx`
 
+Revisamos www.reban.com para ver si ya funciona el sitio. Si sale la Leyenda **Success!  The example.com server block is working!** ya la hicimos.
+
 ## 3. MySQL - MariaDB
 1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=digitalocean-sfo&version=10.3&distro=Ubuntu&distro_release=bionic--ubuntu_bionic)
 2. Corremos `mysql_secure_installation`
@@ -186,7 +191,7 @@ Agregamos el repositorio de ondrej
 1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
 ```
-sudo apt-get install php7.3-fpm php7.3-common php7.3-mbstring php7.3-xmlrpc php7.3-soap php7.3-gd php7.3-xml php7.3-mysql php7.3-cli php7.3-zip php7.3-curl php7.3-intl php7.3-memcached
+sudo apt-get install php7.3-fpm php7.3-common php7.3-mbstring php7.3-xmlrpc php7.3-soap php7.3-gd php7.3-xml php7.3-mysql php7.3-cli php7.3-zip php7.3-curl php7.3-intl php7.3-memcached php7.3-bcmath php7.3-imagick
 ```
 Tenemos que asegurar la instalacion
 ```
@@ -226,13 +231,7 @@ sudo rm /var/www/html/public/info.php
 
 ## 6. WordPress en public_html:
 
-1. Ahora deberemos crear los directorios que le hemos indicado en ese fichero de configuración que usaremos como destinos para los registros de acceso y errores y, por supuesto, como raíz de nuestro sitio web:
-
-```
-sudo mkdir -p /var/www/SITIO.com/{logs,public_html}
-sudo chown -R www-data:www-data /var/www/
-```
-2. Y ahora instalamos WordPress en public_html:
+1. Y ahora instalamos WordPress en public_html:
 ```
 cd /var/www/SITIO.com/public_html
 sudo wget http://wordpress.org/latest.tar.gz
@@ -282,8 +281,8 @@ http://SITIO.com/
 9. Corremots algunos ultimos detalles
 ```
 sudo chown -R www-data:www-data /var/www/
-sudo chown -R www-data:www-data /var/www/SITIO.com/public_html/
-chown -R www-data:www-data /var/www/SITIO.com/
+sudo chown -R www-data:www-data /var/www/html/public/
+chown -R www-data:www-data /var/www/html/
 ```
 ## 7. Cloudflare Railgun y page rules para el cache del HTML
 
