@@ -175,6 +175,9 @@ Save and close the file when you are finished.
 
 Revisamos www.reban.com para ver si ya funciona el sitio. Si sale la Leyenda **Success!  The example.com server block is working!** ya la hicimos.
 
+  `rm -rf /var/www/html/public/index.html`
+
+
 ## 3. MySQL - MariaDB
 1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=digitalocean-sfo&version=10.3&distro=Ubuntu&distro_release=bionic--ubuntu_bionic)
 2. Corremos `mysql_secure_installation`
@@ -226,14 +229,14 @@ phpinfo();
 ```
 Revisamos en **http://IP_DEL_SERVIDOR/info.php** y si corre todo, todo esta bien y luego borramos la info del PHP
 ```
-sudo rm /var/www/html/public/info.php
+rm -rf /var/www/html/public/info.php
 ```
 
 ## 6. WordPress en public_html:
 
 1. Y ahora instalamos WordPress en public_html:
 ```
-cd /var/www/SITIO.com/public_html
+cd /var/www/html/public
 sudo wget http://wordpress.org/latest.tar.gz
 sudo tar -xvzf latest.tar.gz
 sudo mv wordpress/* .
@@ -268,8 +271,8 @@ define('CLOUDFLARE_HTTP2_SERVER_PUSH_ACTIVE', true);
 
 6. Y como se ve en la imagen, añadimos en ese fichero los datos de la base de datos que acabamos de crear. Ahora nos aseguramos de que el directorio raíz tiene los propietarios adecuados, y reiniciamos nginx:
 ```
-cd /var/www/SITIO.com
-sudo chown -R www-data:www-data public_html/
+cd /var/www/html/
+sudo chown -R www-data:www-data public/
 sudo service nginx restart
 ```
 7. y ya podremos acceder a la instalación de WordPress, primero para completarla, haciendo que nuestro navegador vaya a
