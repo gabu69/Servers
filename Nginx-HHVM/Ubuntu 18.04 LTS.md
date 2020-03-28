@@ -137,7 +137,7 @@ server {
          location ~ \.php$ {
                 try_files $uri =404;
                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+                fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
                 include fastcgi_params;
@@ -186,7 +186,7 @@ sudo systemctl stop mariadb.service
 sudo systemctl start mariadb.service
 sudo systemctl enable mariadb.service
 ```  
-## 4. PHP **7.3**
+## 4. PHP **7.4**
 Agregamos el repositorio de ondrej
 `sudo apt-get install software-properties-common`
 `sudo add-apt-repository ppa:ondrej/php`
@@ -194,11 +194,11 @@ Agregamos el repositorio de ondrej
 1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
 ```
-sudo apt-get install php7.3-fpm php7.3-common php7.3-mbstring php7.3-xmlrpc php7.3-soap php7.3-gd php7.3-xml php7.3-mysql php7.3-cli php7.3-zip php7.3-curl php7.3-intl php7.3-memcached php7.3-bcmath php7.3-imagick
+sudo apt-get install php7.4-fpm php7.4-common php7.4-mbstring php7.4-xmlrpc php7.4-soap php7.4-gd php7.4-xml php7.4-mysql php7.4-cli php7.4-zip php7.4-curl php7.4-intl php7.4-bcmath php-imagick php-memcached
 ```
 Tenemos que asegurar la instalacion
 ```
-sudo nano /etc/php/7.3/fpm/php.ini
+sudo nano /etc/php/7.4/fpm/php.ini
 ```
 Buscamos y dejamos todas estas opciones:
 ```
@@ -206,15 +206,16 @@ file_uploads = On
 allow_url_fopen = On
 memory_limit = 256M
 upload_max_filesize = 100M
+post_max_size = 20M
 cgi.fix_pathinfo = 0
 max_execution_time = 360
 date.timezone = America/Mexico_city
 ```
 Salvamos y reiniciamos PHP
 ```
-sudo systemctl stop php7.3-fpm.service
-sudo systemctl start php7.3-fpm.service
-sudo systemctl enable php7.3-fpm.service
+sudo systemctl stop php7.4-fpm.service
+sudo systemctl start php7.4-fpm.service
+sudo systemctl enable php7.4-fpm.service
 ```
 
 ## 6. Revisamos Este bien todo
