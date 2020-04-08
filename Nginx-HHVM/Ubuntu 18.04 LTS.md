@@ -194,7 +194,7 @@ Agregamos el repositorio de ondrej
 1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
 ```
-sudo apt-get install php7.4-fpm php7.4-common php7.4-mbstring php7.4-xmlrpc php7.4-soap php7.4-gd php7.4-xml php7.4-mysql php7.4-cli php7.4-zip php7.4-curl php7.4-intl php7.4-bcmath php-imagick php-memcached
+sudo apt-get install php7.4-fpm php7.4-common php7.4-mbstring php7.4-xmlrpc php7.4-soap php7.4-gd php7.4-xml php7.4-mysql php7.4-cli php7.4-zip php7.4-curl php7.4-intl php7.4-bcmath php-imagick php-memcached php-pear
 ```
 Tenemos que asegurar la instalacion
 ```
