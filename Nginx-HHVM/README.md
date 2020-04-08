@@ -1,4 +1,4 @@
-# Ubuntu 16.04
+# Ubuntu 18.04
   
 * https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04   
 * https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lemp-on-ubuntu-16-04   
@@ -7,11 +7,14 @@
 
 ```
 apt-get update && apt-get upgrade
+sudo apt-get dist-upgrade
+tzselect
 ```
 
 ## 2. Instalamos Nginx
-1. `sudo apt-get install nginx`
-2. Configurar Nginx 
+`sudo apt-get install nginx`
+1. Configuramos Nginx   
+
 `sudo nano /etc/nginx/nginx.conf`
 ````
 user www-data;
@@ -73,7 +76,6 @@ http {
         ##
         # Virtual Host Configs
         ##
-        include /etc/nginx/conf.d/*.conf;
         include /etc/nginx/sites-enabled/*;
 
 
@@ -90,53 +92,37 @@ http {
         open_file_cache_errors   on;
 
 }
-
 ````
 3. Corremos
 ````
-sudo systemctl reload nginx
+sudo systemctl stop nginx.service
+sudo systemctl start nginx.service
+sudo systemctl enable nginx.service
+systemctl status nginx
 ````
-4. Actualizamos Nginx a la ultima version (se tiene que actualizar espues del setup anterior sino tendremos problemas): https://www.linuxbabe.com/nginx/nginx-latest-version-ubuntu-16-04-16-10
-
-## 3. MySQL - MariaDB
-1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=rafal&distro=Ubuntu&distro_release=xenial--ubuntu_xenial&version=10.2)
-2. Corremos `mysql_secure_installation`
-
-## 4. PHP7
-1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
-
-```
-sudo apt-get install php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip php-mcrypt php-memcached
-```
-Tenemos que asegurar la instalacion
-```
-sudo nano /etc/php/7.0/fpm/php.ini
-```
-Buscamos **;cgi.fix_pathinfo=1**, descomentamos y dejamos como:
-```
-cgi.fix_pathinfo=0
-```
-Salvamos y reiniciamos PHP
-```
-sudo systemctl restart php7.0-fpm
-```
-## 5. Configuramos Nginx para el servidor
+4. Creamos directorios para los sitios
+````
+sudo mkdir -p /var/www/html/{logs,public}
+sudo chown -R www-data:www-data /var/www/
+sudo chmod -R 755 /var/www/html
+````
+### A. Configuramos Nginx para el servidor
 1. Configuramos la carpeta y el archivo del servidor
-```
+````
 cd /etc/nginx/sites-available/
 rm -rf *
-sudo nano /etc/nginx/sites-available/sitio.com
-```
-2. Agregamso el codigo acorde
-
+rm -rf /etc/nginx/sites-enabled/default
+sudo nano /etc/nginx/sites-available/public
+````
+2. Pegamos el siguiente codigo acorde:
 ```
 server {
         listen 80;
-        server_name 66.228.48.246;
+        server_name reban.com www.reban.com;
+        root /var/www/html/public;
 
-        root /var/www/SITIO.com/public_html;
-
-        error_log /var/www/SITIO.com/logs/error.log;
+        # Logs
+        error_log /var/www/html/logs/error.log;
         access_log off;
 
         # Add index.php to the list if you are using PHP
@@ -151,54 +137,107 @@ server {
          location ~ \.php$ {
                 try_files $uri =404;
                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+                fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
                 include fastcgi_params;
         }
-
-        # deny access to .htaccess files, if Apache's document root
-        # concurs with nginx's one
-        #
-        location ~ /\.ht {
-                deny all;
-        }
-
-        #### Enabling HTTP Strict Transport Security on Your Server
-        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
-
-
 }
 ```
 3. Y creamos un enlace desde el directorio /etc/nginx/sites-enabled para que Nginx sepa que ese nuevo sitio web estará habilitado: 
 
-`sudo ln -s /etc/nginx/sites-available/SITIO.com /etc/nginx/sites-enabled/SITIO.com`
+`sudo ln -s /etc/nginx/sites-available/public /etc/nginx/sites-enabled/`
+
+4. Test for syntax errors:   
+
+ `sudo nginx -t`
+
+5. Next, create a sample index.html page using nano or your favorite editor:
+
+ `nano /var/www/html/public/index.html`
+ 
+Inside, add the following sample HTML:
+```
+<html>
+    <head>
+        <title>Welcome to Example.com!</title>
+    </head>
+    <body>
+        <h1>Success!  The example.com server block is working!</h1>
+    </body>
+</html>
+```
+Save and close the file when you are finished.
+
+5. Restart Nginx to enable your changes:
+
+ `sudo systemctl restart nginx`
+
+Revisamos www.reban.com para ver si ya funciona el sitio. Si sale la Leyenda **Success!  The example.com server block is working!** ya la hicimos.
+
+  `rm -rf /var/www/html/public/index.html`
+
+
+## 3. MySQL - MariaDB
+1. Descargamos de [MariaDB Foundation](https://downloads.mariadb.org/mariadb/repositories/#mirror=digitalocean-sfo&version=10.3&distro=Ubuntu&distro_release=bionic--ubuntu_bionic)
+2. Corremos `mysql_secure_installation`
+```
+sudo systemctl stop mariadb.service
+sudo systemctl start mariadb.service
+sudo systemctl enable mariadb.service
+```  
+## 4. PHP **7.4**
+Agregamos el repositorio de ondrej
+`sudo apt-get install software-properties-common`
+`sudo add-apt-repository ppa:ondrej/php`
+
+1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
+
+```
+sudo apt-get install php7.4-fpm php7.4-common php7.4-mbstring php7.4-xmlrpc php7.4-soap php7.4-gd php7.4-xml php7.4-mysql php7.4-cli php7.4-zip php7.4-curl php7.4-intl php7.4-bcmath php-imagick php-memcached php-pear
+```
+Tenemos que asegurar la instalacion
+```
+sudo nano /etc/php/7.4/fpm/php.ini
+```
+Buscamos y dejamos todas estas opciones:
+```
+file_uploads = On
+allow_url_fopen = On
+memory_limit = 256M
+upload_max_filesize = 100M
+post_max_size = 20M
+cgi.fix_pathinfo = 0
+max_execution_time = 360
+date.timezone = America/Mexico_city
+```
+Salvamos y reiniciamos PHP
+```
+sudo systemctl stop php7.4-fpm.service
+sudo systemctl start php7.4-fpm.service
+sudo systemctl enable php7.4-fpm.service
+```
+
 ## 6. Revisamos Este bien todo
 Usando de ejemplo https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-5-create-a-php-file-to-test-configuration:
 ```
-nano /var/www/SITIO.com/public_html/info.php
+nano /var/www/html/public/info.php
 ```
 Metemos este codigo
 ```
 <?php
 phpinfo();
 ```
-Revisamos en **http://IP_DEL_SERVIDO/Rinfo.php** y si corre todo, todo esta bien y luego borramos la info del PHP
+Revisamos en **http://IP_DEL_SERVIDOR/info.php** y si corre todo, todo esta bien y luego borramos la info del PHP
 ```
-sudo rm /var/www/SITIO.com/public_html/info.php
+rm -rf /var/www/html/public/info.php
 ```
 
 ## 6. WordPress en public_html:
 
-1. Ahora deberemos crear los directorios que le hemos indicado en ese fichero de configuración que usaremos como destinos para los registros de acceso y errores y, por supuesto, como raíz de nuestro sitio web:
-
+1. Y ahora instalamos WordPress en public_html:
 ```
-sudo mkdir -p /var/www/SITIO.com/{logs,public_html}
-sudo chown -R www-data:www-data /var/www/
-```
-2. Y ahora instalamos WordPress en public_html:
-```
-cd /var/www/SITIO.com/public_html
+cd /var/www/html/public
 sudo wget http://wordpress.org/latest.tar.gz
 sudo tar -xvzf latest.tar.gz
 sudo mv wordpress/* .
@@ -233,8 +272,8 @@ define('CLOUDFLARE_HTTP2_SERVER_PUSH_ACTIVE', true);
 
 6. Y como se ve en la imagen, añadimos en ese fichero los datos de la base de datos que acabamos de crear. Ahora nos aseguramos de que el directorio raíz tiene los propietarios adecuados, y reiniciamos nginx:
 ```
-cd /var/www/SITIO.com
-sudo chown -R www-data:www-data public_html/
+cd /var/www/html/
+sudo chown -R www-data:www-data public/
 sudo service nginx restart
 ```
 7. y ya podremos acceder a la instalación de WordPress, primero para completarla, haciendo que nuestro navegador vaya a
@@ -246,8 +285,8 @@ http://SITIO.com/
 9. Corremots algunos ultimos detalles
 ```
 sudo chown -R www-data:www-data /var/www/
-sudo chown -R www-data:www-data /var/www/SITIO.com/public_html/
-chown -R www-data:www-data /var/www/SITIO.com/
+sudo chown -R www-data:www-data /var/www/html/public/
+chown -R www-data:www-data /var/www/html/
 ```
 ## 7. Cloudflare Railgun y page rules para el cache del HTML
 
