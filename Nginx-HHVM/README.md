@@ -6,8 +6,7 @@
 ## 1. Actualizamos el servidor
 
 ```
-apt-get update && apt-get upgrade
-sudo apt-get dist-upgrade
+sudo apt-get update && apt-get upgrade && apt-get dist-upgrade && apt-get autoremove
 tzselect
 ```
 
