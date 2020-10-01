@@ -191,8 +191,10 @@ mysql -V
 ```  
 ## 4. PHP **7.4**
 Agregamos el repositorio de ondrej
-`sudo apt-get install software-properties-common`
-`sudo add-apt-repository ppa:ondrej/php`
+```
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:ondrej/php
+```
 
 1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
@@ -209,7 +211,7 @@ file_uploads = On
 allow_url_fopen = On
 memory_limit = 256M
 upload_max_filesize = 100M
-post_max_size = 20M
+post_max_size = 100M
 cgi.fix_pathinfo = 0
 max_execution_time = 360
 date.timezone = America/Mexico_city
