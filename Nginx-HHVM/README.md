@@ -188,8 +188,10 @@ sudo systemctl enable mariadb.service
 ```  
 ## 4. PHP **7.4**
 Agregamos el repositorio de ondrej
-`sudo apt-get install software-properties-common`
-`sudo add-apt-repository ppa:ondrej/php`
+```
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:ondrej/php
+```
 
 1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
