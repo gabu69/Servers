@@ -6,8 +6,7 @@
 ## 1. Actualizamos el servidor
 
 ```
-apt-get update && apt-get upgrade
-sudo apt-get dist-upgrade
+sudo apt-get update && apt-get upgrade && apt-get dist-upgrade && apt-get autoremove
 tzselect
 ```
 
@@ -206,7 +205,7 @@ file_uploads = On
 allow_url_fopen = On
 memory_limit = 256M
 upload_max_filesize = 100M
-post_max_size = 20M
+post_max_size = 100M
 cgi.fix_pathinfo = 0
 max_execution_time = 360
 date.timezone = America/Mexico_city
