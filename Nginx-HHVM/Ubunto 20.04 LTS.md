@@ -139,7 +139,7 @@ server {
          location ~ \.php$ {
                 try_files $uri =404;
                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+                fastcgi_pass unix:/var/run/php/php8.0-fpm.sock;
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
                 include fastcgi_params;
@@ -189,7 +189,7 @@ sudo systemctl start mariadb.service
 sudo systemctl enable mariadb.service
 mysql -V
 ```  
-## 4. PHP **7.4**
+## 4. PHP **8.4**
 Agregamos el repositorio de ondrej
 ```
 sudo apt-get install software-properties-common
@@ -199,11 +199,11 @@ sudo add-apt-repository ppa:ondrej/php
 1. Instalamos PHP7 con todas sus dependencias [Configuramos PHP7](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04#step-3-install-php-for-processing)
 
 ```
-sudo apt-get install php7.4-fpm php7.4-common php7.4-mbstring php7.4-xmlrpc php7.4-soap php7.4-gd php7.4-xml php7.4-mysql php7.4-cli php7.4-zip php7.4-curl php7.4-intl php7.4-bcmath php-imagick php-memcached php-pear
+sudo apt-get install php8.0-fpm php8.0-common php8.0-mbstring php8.0-xmlrpc php8.0-soap php8.0-gd php8.0-xml php8.0-mysql php8.0-cli php8.0-zip php8.0-curl php8.0-intl php8.0-bcmath php-imagick php-memcached php-pear
 ```
 Tenemos que asegurar la instalacion
 ```
-sudo nano /etc/php/7.4/fpm/php.ini
+sudo nano /etc/php/8.0/fpm/php.ini
 ```
 Buscamos y dejamos todas estas opciones:
 ```
@@ -218,9 +218,9 @@ date.timezone = America/Mexico_city
 ```
 Salvamos y reiniciamos PHP
 ```
-sudo systemctl stop php7.4-fpm.service
-sudo systemctl start php7.4-fpm.service
-sudo systemctl enable php7.4-fpm.service
+sudo systemctl stop php8.0-fpm.service
+sudo systemctl start php8.0-fpm.service
+sudo systemctl enable php8.0-fpm.service
 ```
 
 ## 6. Revisamos Este bien todo
