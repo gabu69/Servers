@@ -217,6 +217,7 @@ Salvamos y reiniciamos PHP
 sudo systemctl stop php8.0-fpm.service
 sudo systemctl start php8.0-fpm.service
 sudo systemctl enable php8.0-fpm.service
+sudo systemctl restart nginx
 ```
 
 ## 6. Revisamos Este bien todo
