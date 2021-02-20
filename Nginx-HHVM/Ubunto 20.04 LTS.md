@@ -185,7 +185,7 @@ sudo systemctl start mariadb.service
 sudo systemctl enable mariadb.service
 mysql -V
 ```  
-## 4. PHP **8.4**
+## 4. PHP **8.0**
 Agregamos el repositorio de ondrej
 ```
 sudo apt-get install software-properties-common
